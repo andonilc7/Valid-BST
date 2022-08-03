@@ -19,6 +19,14 @@ let rec is_min_of_list l =
    | h::t -> min h (is_min_of_list t)
 
 
+
+let rec split_preorder l =
+  match l with
+  (* | base case *)
+  | h1::h2::t -> 
+    if
+
+
 (* let rec val l = 
   match l with
   | [] -> true
@@ -30,3 +38,5 @@ let rec is_min_of_list l =
 (* 
 - if 2nd > 1st, then check number after that, if < 
 *)
+
+
