@@ -1,46 +1,58 @@
 let bpa = Array.make 100 (-1)
-(* let test_string = "3 4 5 1 2"
-let test_array = [|3;4;5;1;2|] *)
 
-(* let hack_1 = [|1;2;3|]
-let hack_2 = [|2;1;3|]
-let hack_3 = [|3;2;1;5;4;6|]
-let hack_4 = [|1;3;4;2|]
-let hack_5 = [|3;4;5;1;2|] *)
-
-let max_num_index_in_arr index arr =
-  let max_num_index = ref 0
-  in
-  for i=0 to index-1 do
-    if arr.(i) > arr.(!max_num_index) then max_num_index := i
-  done;
-  !max_num_index
 
 let int_array_of_string s = 
   Array.of_list
   @@ List.map int_of_string
   @@ String.split_on_char ' ' s
 
+
+
+let rec get_backpointer l n idx =
+
+  (* if you have gone to an index past the root, then the root must be the parent so the backpointer is to 0 *)
+  if idx = -1
+  then 0
+  else
+
+  (* if you are going back in the array and find a number that is greater, then the index has to be the one in front *)
+  (if l.(idx) > n
+  then idx+1
+
+  (* if you reach a node that has a backpointer, then that is the backpointer of the current node *)
+  else (if bpa.(idx)<>(-1)
+           then idx
+
+  (* if nothing is met, go one space back in the array and repeat *)
+  else get_backpointer l n (idx-1)))
+
+
+
+(* processes input*)
 let process_input s pre = 
+  (* resets bpa to -1's  *)
+  Array.fill bpa 0 100 (-1);
+
+  (* goes through array to see when you find a node that is greater than the previous 
+     and applies the get_backpointer function *)
   for i=1 to (s-1) do
     if pre.(i)>pre.(i-1)
-      then bpa.(i) <- (max_num_index_in_arr i pre)
-    else bpa.(i) <- (-1)
+      then bpa.(i) <- get_backpointer pre pre.(i) (i-1)
   done
 
-(* need to fix so that doesn't always do the one before as the parent
-   , have to figure out how to get parent *)
 
 
-(* Array.sub bpa 0 s *)
-
-
+(* this function goes through the backpointer array *)
 let is_bst s pre = 
   let flag = ref true
   in
   for i=1 to (s-1) do
+    (* once you find a node in bpa that backpoints to something... *)
     if (bpa.(i)>(-1))
       then
+        (* checks in the pre list to make sure that all of the elements 
+           to the right of the index in bpa are greater than the backpointed ]
+           element in the pre-order array*)
         for j=i to (s-1) do
           if pre.(j)<=pre.(bpa.(i))
             then flag := false
@@ -48,6 +60,8 @@ let is_bst s pre =
   done;
   !flag
 
+
+  (* main function, deals with inputs on HackerRank *)
   let () = 
   let n = int_of_string (read_line ())
   in
@@ -56,7 +70,5 @@ let is_bst s pre =
     in let pre = int_array_of_string @@ read_line ()
     in
     process_input size pre;
-    print_endline @@ if (is_bst size pre==true) then "YES" else "NO"
+    print_endline @@ if (is_bst size pre == true) then "YES" else "NO"
    done
-
-
