@@ -1,6 +1,6 @@
 # Valid-BST HackerRank Problem
 
-## \*\*Note: the file that was used for the HackerRank problem is "valid-bst.ml"
+### \*\*Note: the file that was used for the HackerRank problem is "valid-bst.ml"
 
 Problem: Given pre-order traversal of binary tree, had to determine whether was binary search tree or not.
 
